@@ -65,3 +65,10 @@ Digital signatures provide integrity, authenticity, and non-repudiation to digit
 ## Conclusion
 
 Cryptography provides the foundation for secure communication, data protection, and information integrity. By understanding symmetric and asymmetric encryption, hash functions and message digests, digital signatures, certificates, and cryptographic protocols, individuals and organizations can employ cryptographic techniques to protect sensitive information, ensure secure communication, and establish trust in digital transactions.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on tools:
+- AES File Encryptor
+- Hash Generator & Verifier
+- RSA Key Exchange Demo

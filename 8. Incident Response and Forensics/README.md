@@ -71,3 +71,10 @@ Malware analysis involves studying malicious software to understand its behavior
 ## Conclusion
 
 Incident response and forensics are essential capabilities for any organization facing modern cyber threats. By following established frameworks, maintaining rigorous evidence handling standards, and developing expertise in malware analysis, organizations can minimize damage, support legal proceedings, and continuously strengthen their defenses.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on simulations:
+- Log Incident Analyzer
+- File Integrity Checker
+- Memory Forensics Simulator

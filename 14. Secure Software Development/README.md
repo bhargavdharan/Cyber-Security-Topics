@@ -112,3 +112,9 @@ DevSecOps integrates security into DevOps practices, ensuring security is a shar
 ## Conclusion
 
 Secure software development is not a one-time activity but a continuous discipline. By adopting secure coding practices, embedding security into the SDLC, conducting thorough threat modeling, and leveraging automated and manual testing, organizations can significantly reduce their risk exposure and deliver software that users can trust.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on exercises:
+- Secure Code Examples
+- Threat Modeling Exercise

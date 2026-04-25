@@ -84,3 +84,9 @@ Critical infrastructure sectors—including energy, water, transportation, healt
 ## Conclusion
 
 ICS security is a specialized discipline that requires understanding both cybersecurity principles and industrial operations. By implementing robust segmentation, following established standards like IEC 62443 and NIST SP 800-82, and fostering collaboration between IT and OT teams, organizations can protect critical infrastructure from increasingly sophisticated cyber threats.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on simulations:
+- ICS Network Simulator
+- SCADA HMI Simulator

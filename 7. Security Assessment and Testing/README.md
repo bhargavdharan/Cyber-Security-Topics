@@ -82,3 +82,10 @@ Exploitation involves leveraging discovered vulnerabilities to gain unauthorized
 ## Conclusion
 
 Security assessment and testing are essential components of a robust cybersecurity program. Through vulnerability assessments, penetration testing, scanning, and ethical exploitation, organizations can proactively identify weaknesses, validate defenses, and continuously improve their security posture.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on tools:
+- Vulnerability Scanner
+- Password Security Auditor
+- Web Directory Enumerator

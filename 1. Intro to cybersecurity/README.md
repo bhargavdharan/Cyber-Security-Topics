@@ -83,3 +83,10 @@ Adhering to security principles and best practices is essential for effective cy
 
 These principles and best practices help establish a strong security posture and enhance the overall resilience of systems and networks.
 
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on simulations:
+- CIA Triad Simulator
+- Password Strength Checker
+- Social Engineering Awareness Quiz
+

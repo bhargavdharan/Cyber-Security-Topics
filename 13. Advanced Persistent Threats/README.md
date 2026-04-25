@@ -84,3 +84,9 @@ APTs often deploy custom, sophisticated malware designed to evade detection.
 ## Conclusion
 
 Advanced Persistent Threats represent the highest tier of cyber adversaries, requiring equally advanced defenses. By understanding the APT lifecycle, investing in detection and response capabilities, analyzing malware deeply, and learning from real-world case studies, organizations can improve their resilience against these persistent and capable threats.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on simulations:
+- APT Lifecycle Simulator
+- Persistence Mechanism Detector

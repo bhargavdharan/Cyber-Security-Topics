@@ -77,3 +77,10 @@ Building secure mobile apps requires integrating security throughout the develop
 ## Conclusion
 
 Mobile security requires a comprehensive approach encompassing device hardening, secure application development, centralized management, and user awareness. By implementing MDM/UEM solutions, following secure coding practices, and educating users about mobile threats, organizations can protect sensitive data in an increasingly mobile-first world.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on simulations:
+- App Permission Analyzer
+- Secure Storage Demo
+- Mobile Threat Simulator

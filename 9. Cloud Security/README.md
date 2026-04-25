@@ -85,3 +85,10 @@ Protecting data throughout its lifecycle is a top priority in cloud environments
 ## Conclusion
 
 Cloud security requires a shift in mindset from traditional perimeter-based security to identity-centric, data-centric, and configuration-aware security. By understanding cloud models, implementing robust IAM, encrypting data, and leveraging cloud-native security tools, organizations can securely harness the benefits of cloud computing.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on simulations:
+- IAM Policy Simulator
+- S3 Bucket Security Scanner
+- Cloud Configuration Auditor

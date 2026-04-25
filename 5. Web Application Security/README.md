@@ -80,3 +80,10 @@ Web Application Firewalls (WAFs) are security appliances or software solutions d
 ## Conclusion
 
 Web application security is crucial in protecting applications from various vulnerabilities and attacks. By understanding the OWASP Top Ten vulnerabilities, web application architecture, input validation and output encoding, utilizing web application firewalls, and following secure development practices, organizations can enhance the security of their web applications, mitigate risks, and safeguard user data.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on simulations:
+- Input Sanitization Demo
+- Vulnerable App Simulator
+- Session Security Demo

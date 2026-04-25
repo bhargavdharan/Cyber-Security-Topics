@@ -231,3 +231,10 @@ FTP is a protocol used for the transfer of files between devices on a network. I
 
 Use Case: FTP is commonly used by web developers, content creators, and businesses to transfer files between local machines and remote servers, facilitating efficient file management and collaboration.
 
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on tools:
+- Subnet Calculator
+- Port Scanner
+- DNS Lookup Tool
+

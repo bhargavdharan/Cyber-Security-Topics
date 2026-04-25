@@ -89,3 +89,10 @@ Threat hunting is the proactive search for threats that evade existing security 
 ## Conclusion
 
 Threat intelligence and security analytics transform raw data into strategic advantage. By leveraging diverse intelligence sources, SIEM platforms, advanced log correlation, and visualization techniques, organizations can detect threats faster, respond more effectively, and continuously adapt to the evolving threat landscape.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on tools:
+- IOC Analyzer
+- Log Correlator
+- Threat Hunting Simulator

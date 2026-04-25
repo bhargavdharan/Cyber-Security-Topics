@@ -64,3 +64,10 @@ Security hardening involves implementing measures to strengthen the security pos
 ## Conclusion
 
 Operating systems play a crucial role in maintaining the security of computer systems. By understanding the security features and best practices associated with popular operating systems, user management and access controls, file system security, and security hardening techniques, organizations can enhance the security of their systems, protect data, and mitigate potential threats.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on simulations:
+- File Permission Analyzer
+- System Hardening Checker
+- Log Monitor

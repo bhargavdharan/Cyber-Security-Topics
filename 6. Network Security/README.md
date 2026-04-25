@@ -76,3 +76,10 @@ Continuous monitoring of network traffic is essential for detecting anomalies, i
 ## Conclusion
 
 Network security is a multi-layered discipline that requires a combination of firewalls, IDS/IPS, VPNs, wireless security protocols, and continuous monitoring. By implementing these controls and following best practices, organizations can protect their networks from unauthorized access, data breaches, and cyber attacks.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on simulations:
+- Firewall Rule Simulator
+- IDS Alert Simulator
+- VPN Tunnel Simulator

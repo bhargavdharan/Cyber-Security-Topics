@@ -100,3 +100,10 @@ Quantum computing represents both a transformative technology and an existential
 ## Conclusion
 
 Emerging technologies bring tremendous opportunities along with new security challenges. By proactively addressing IoT vulnerabilities, harnessing AI responsibly, securing blockchain implementations, and preparing for the quantum threat, organizations can innovate securely and maintain resilience in an ever-changing technological landscape.
+
+## Projects
+
+Check out the [projects folder](./projects/) for hands-on simulations:
+- IoT Device Simulator
+- Quantum Key Distribution Sim
+- Blockchain Security Demo
