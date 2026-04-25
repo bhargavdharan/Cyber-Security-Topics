@@ -83,10 +83,42 @@ SIMULATION_SCRIPTS = {
     'blockchain': '15. Emerging Technologies in Cybersecurity/projects/blockchain_security.py',
 }
 
+# Input sequences for interactive simulations
+# Each entry is a string of newline-separated inputs piped to the script
+SIMULATION_INPUTS = {
+    # cia_triad: choice 4 (Run All), then inputs for each demo, then exit
+    'cia_triad': '4\nHello World\n3\nImportant Document\nWeb Server\n10\n0.2\n5\n',
+    
+    # password_strength: analyze one password then quit
+    'password_strength': 'MyS3cur3P@ssw0rd!2024\nquit\n',
+    
+    # hash_tool: choice 4 (Algorithm Security Comparison - no inputs needed), then exit
+    'hash_tool': '4\n6\n',
+    
+    # iam_policy_simulator: choice 4 (Run All - no inputs needed), then exit
+    'iam_sim': '4\n5\n',
+    
+    # Default for many: try "4" (Run All) then exit option
+    # These will be used as fallback for simulations not explicitly mapped
+}
+
+
+def get_simulation_inputs(sim_name):
+    """Get the input sequence for a simulation."""
+    if sim_name in SIMULATION_INPUTS:
+        return SIMULATION_INPUTS[sim_name]
+    
+    # Generic fallback: try common patterns
+    # Pattern A: menu with 4=Run All, 5=Exit
+    # Pattern B: menu with 4=Run All, 6=Exit
+    return '4\n5\n'
+
+
 @simulations_bp.route('/list', methods=['GET'])
 def list_simulations():
     """List all available simulations grouped by topic."""
     return jsonify(SIMULATION_SCRIPTS)
+
 
 @simulations_bp.route('/run/<sim_name>', methods=['POST'])
 @token_required
@@ -96,35 +128,42 @@ def run_simulation(user_id, sim_name):
         return jsonify({'error': 'Simulation not found'}), 404
     
     script_path = SIMULATION_SCRIPTS[sim_name]
-    full_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), script_path)
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    full_path = os.path.join(base_dir, script_path)
     
     if not os.path.exists(full_path):
-        return jsonify({'error': f'Simulation script not found: {script_path}'}), 404
+        return jsonify({'error': f'Simulation script not found: {full_path}'}), 404
     
-    # Get topic ID from request or determine from script path
     data = request.get_json() or {}
     topic_id = data.get('topic_id')
     
     start_time = time.time()
     
     try:
-        # Run the simulation with a menu selection if provided
-        menu_choice = data.get('menu_choice', '5')  # Default to 'run all' or exit
+        # Build environment with UTF-8 encoding to prevent Windows charmap errors
+        env = os.environ.copy()
+        env['PYTHONIOENCODING'] = 'utf-8'
+        
+        # Get the input sequence for this simulation
+        input_sequence = get_simulation_inputs(sim_name)
         
         result = subprocess.run(
             ['python', full_path],
-            input=f"{menu_choice}\n",
+            input=input_sequence,
             capture_output=True,
             text=True,
             timeout=30,
-            cwd=os.path.dirname(os.path.dirname(__file__))
+            cwd=base_dir,
+            env=env
         )
         
         execution_time = int((time.time() - start_time) * 1000)
         
         output = result.stdout
         if result.stderr:
-            output += f"\n[STDERR]\n{result.stderr}"
+            # Filter out common non-error stderr messages
+            stderr_filtered = result.stderr
+            output += f"\n[STDERR]\n{stderr_filtered}"
         
         # Log the simulation execution
         SimulationLog.create(
@@ -144,9 +183,10 @@ def run_simulation(user_id, sim_name):
         })
         
     except subprocess.TimeoutExpired:
-        return jsonify({'error': 'Simulation timed out'}), 504
+        return jsonify({'error': 'Simulation timed out after 30 seconds'}), 504
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 @simulations_bp.route('/run-batch', methods=['POST'])
 @token_required
@@ -155,20 +195,26 @@ def run_batch_simulation(user_id):
     data = request.get_json() or {}
     simulations = data.get('simulations', [])
     
+    env = os.environ.copy()
+    env['PYTHONIOENCODING'] = 'utf-8'
+    
     results = []
     for sim_name in simulations:
         if sim_name in SIMULATION_SCRIPTS:
             script_path = SIMULATION_SCRIPTS[sim_name]
-            full_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), script_path)
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            full_path = os.path.join(base_dir, script_path)
             
             try:
+                input_sequence = get_simulation_inputs(sim_name)
                 result = subprocess.run(
                     ['python', full_path],
-                    input="5\n",  # Run all demos
+                    input=input_sequence,
                     capture_output=True,
                     text=True,
                     timeout=30,
-                    cwd=os.path.dirname(os.path.dirname(__file__))
+                    cwd=base_dir,
+                    env=env
                 )
                 results.append({
                     'simulation': sim_name,
@@ -181,5 +227,11 @@ def run_batch_simulation(user_id):
                     'error': str(e),
                     'success': False
                 })
+        else:
+            results.append({
+                'simulation': sim_name,
+                'error': 'Simulation not found',
+                'success': False
+            })
     
     return jsonify({'results': results})

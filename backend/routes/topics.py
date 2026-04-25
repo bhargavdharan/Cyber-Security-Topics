@@ -1,13 +1,141 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, send_from_directory
 from models import Topic, UserProgress, QuizResult
 from routes.middleware import token_required
+import os
+import re
 
 topics_bp = Blueprint('topics', __name__, url_prefix='/api/topics')
+
+# Map topic slugs to their folder names for README lookup
+SLUG_TO_FOLDER = {
+    'intro-to-cybersecurity': '1. Intro to cybersecurity',
+    'networking-fundamentals': '2. Networking Fundamentals',
+    'operating-systems-security': '3. Operating system and security',
+    'cryptography': '4. Cryptography',
+    'web-application-security': '5. Web Application Security',
+    'network-security': '6. Network Security',
+    'security-assessment-testing': '7. Security Assessment and Testing',
+    'incident-response-forensics': '8. Incident Response and Forensics',
+    'cloud-security': '9. Cloud Security',
+    'mobile-security': '10. Mobile Security',
+    'threat-intelligence': '11. Threat Intelligence and Security Analytics',
+    'ics-security': '12. Industrial Control Systems Security',
+    'advanced-persistent-threats': '13. Advanced Persistent Threats',
+    'secure-software-development': '14. Secure Software Development',
+    'emerging-technologies': '15. Emerging Technologies in Cybersecurity',
+}
+
+
+def markdown_to_html(text):
+    """Simple markdown to HTML converter for lesson content."""
+    lines = text.split('\n')
+    html_lines = []
+    in_code_block = False
+    code_lines = []
+    in_list = False
+    list_type = None
+    
+    for line in lines:
+        # Code blocks
+        if line.startswith('```'):
+            if in_code_block:
+                html_lines.append(f'<pre><code>{"\\n".join(code_lines)}</code></pre>')
+                code_lines = []
+                in_code_block = False
+            else:
+                in_code_block = True
+            continue
+        
+        if in_code_block:
+            code_lines.append(line)
+            continue
+        
+        # Inline code
+        line = re.sub(r'`([^`]+)`', r'<code>\1</code>', line)
+        
+        # Headers
+        if line.startswith('# '):
+            html_lines.append(f'<h1>{line[2:]}</h1>')
+        elif line.startswith('## '):
+            html_lines.append(f'<h2>{line[3:]}</h2>')
+        elif line.startswith('### '):
+            html_lines.append(f'<h3>{line[4:]}</h3>')
+        elif line.startswith('#### '):
+            html_lines.append(f'<h4>{line[5:]}</h4>')
+        # Lists
+        elif line.startswith('- ') or line.startswith('* '):
+            if not in_list or list_type != 'ul':
+                if in_list:
+                    html_lines.append(f'</{list_type}>')
+                html_lines.append('<ul>')
+                in_list = True
+                list_type = 'ul'
+            html_lines.append(f'<li>{line[2:]}</li>')
+        elif re.match(r'^\d+\.\s', line):
+            if not in_list or list_type != 'ol':
+                if in_list:
+                    html_lines.append(f'</{list_type}>')
+                html_lines.append('<ol>')
+                in_list = True
+                list_type = 'ol'
+            content = re.sub(r'^\d+\.\s', '', line)
+            html_lines.append(f'<li>{content}</li>')
+        # Empty line - close lists
+        elif line.strip() == '':
+            if in_list:
+                html_lines.append(f'</{list_type}>')
+                in_list = False
+                list_type = None
+            html_lines.append('<br>')
+        # Bold and italic
+        else:
+            line = re.sub(r'\*\*\*(.+?)\*\*\*', r'<em><strong>\1</strong></em>', line)
+            line = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', line)
+            line = re.sub(r'\*(.+?)\*', r'<em>\1</em>', line)
+            # Links
+            line = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2" target="_blank">\1</a>', line)
+            html_lines.append(f'<p>{line}</p>')
+    
+    if in_list:
+        html_lines.append(f'</{list_type}>')
+    if in_code_block:
+        html_lines.append(f'<pre><code>{"\\n".join(code_lines)}</code></pre>')
+    
+    return '\n'.join(html_lines)
+
 
 @topics_bp.route('/', methods=['GET'])
 def get_topics():
     topics = Topic.get_all()
     return jsonify(topics)
+
+
+@topics_bp.route('/<slug>/content', methods=['GET'])
+def get_topic_content(slug):
+    """Fetch the topic's README.md and return as HTML."""
+    if slug not in SLUG_TO_FOLDER:
+        return jsonify({'error': 'Topic folder not found'}), 404
+    
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    folder = SLUG_TO_FOLDER[slug]
+    readme_path = os.path.join(base_dir, folder, 'README.md')
+    
+    if not os.path.exists(readme_path):
+        return jsonify({'error': 'README not found'}), 404
+    
+    try:
+        with open(readme_path, 'r', encoding='utf-8') as f:
+            markdown_content = f.read()
+        
+        html_content = markdown_to_html(markdown_content)
+        return jsonify({
+            'slug': slug,
+            'html': html_content,
+            'markdown': markdown_content
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 
 @topics_bp.route('/<slug>', methods=['GET'])
 def get_topic(slug):
@@ -16,11 +144,13 @@ def get_topic(slug):
         return jsonify({'error': 'Topic not found'}), 404
     return jsonify(topic)
 
+
 @topics_bp.route('/progress', methods=['GET'])
 @token_required
 def get_progress(user_id):
     progress = UserProgress.get_user_progress(user_id)
     return jsonify(progress)
+
 
 @topics_bp.route('/<int:topic_id>/progress', methods=['PUT'])
 @token_required
@@ -36,6 +166,7 @@ def update_topic_progress(user_id, topic_id):
     )
     return jsonify({'message': 'Progress updated'})
 
+
 @topics_bp.route('/quiz', methods=['POST'])
 @token_required
 def submit_quiz(user_id):
@@ -50,6 +181,7 @@ def submit_quiz(user_id):
         data.get('answers_json')
     )
     return jsonify({'message': 'Quiz result saved'}), 201
+
 
 @topics_bp.route('/quiz-results', methods=['GET'])
 @token_required

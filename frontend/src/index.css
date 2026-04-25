@@ -101,6 +101,102 @@ body {
   background-color: #e7f1ff;
 }
 
+/* Lesson Content Styling */
+.lesson-content h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--dark-color);
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+}
+
+.lesson-content h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--dark-color);
+}
+
+.lesson-content h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #333;
+}
+
+.lesson-content p {
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+.lesson-content ul, .lesson-content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.lesson-content li {
+  margin-bottom: 0.5rem;
+}
+
+.lesson-content code {
+  background-color: #f4f4f4;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.9em;
+  color: #d63384;
+}
+
+.lesson-content pre {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1.25rem;
+}
+
+.lesson-content pre code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+.lesson-content a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.lesson-content a:hover {
+  text-decoration: underline;
+}
+
+.lesson-content strong {
+  font-weight: 600;
+  color: #222;
+}
+
+.lesson-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.25rem;
+}
+
+.lesson-content th, .lesson-content td {
+  border: 1px solid #dee2e6;
+  padding: 0.6rem;
+  text-align: left;
+}
+
+.lesson-content th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }

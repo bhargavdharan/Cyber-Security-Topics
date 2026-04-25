@@ -139,11 +139,14 @@ const TopicDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [topic, setTopic] = useState(null);
+  const [lessonContent, setLessonContent] = useState('');
+  const [lessonLoading, setLessonLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchTopic();
+    fetchLessonContent();
   }, [slug]);
 
   const fetchTopic = async () => {
@@ -155,6 +158,19 @@ const TopicDetail = () => {
       navigate('/dashboard');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchLessonContent = async () => {
+    setLessonLoading(true);
+    try {
+      const response = await api.get(`/topics/${slug}/content`);
+      setLessonContent(response.data.html);
+    } catch (err) {
+      console.error('Failed to fetch lesson content:', err);
+      setLessonContent('<p class="text-muted">Lesson content is being prepared. Check back soon!</p>');
+    } finally {
+      setLessonLoading(false);
     }
   };
 
@@ -192,7 +208,7 @@ const TopicDetail = () => {
             className={`nav-link ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
           >
-            <i className="bi bi-book me-2"></i>Overview
+            <i className="bi bi-book me-2"></i>Lessons
           </button>
         </li>
         <li className="nav-item">
@@ -217,21 +233,19 @@ const TopicDetail = () => {
       {activeTab === 'overview' && (
         <div className="card">
           <div className="card-body">
-            <h5>About This Topic</h5>
-            <p>{topic.description}</p>
-            <hr />
-            <h6>What You'll Learn:</h6>
-            <ul>
-              <li>Core concepts and principles</li>
-              <li>Practical hands-on simulations</li>
-              <li>Real-world security scenarios</li>
-              <li>Best practices and mitigations</li>
-            </ul>
-            <div className="alert alert-info">
-              <i className="bi bi-info-circle me-2"></i>
-              Switch to the <strong>Simulations</strong> tab to run interactive exercises, 
-              or try the <strong>Quiz</strong> to test your knowledge!
-            </div>
+            {lessonLoading ? (
+              <div className="d-flex justify-content-center py-5">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading lesson...</span>
+                </div>
+              </div>
+            ) : (
+              <div 
+                className="lesson-content" 
+                dangerouslySetInnerHTML={{ __html: lessonContent }}
+                style={{ lineHeight: '1.7' }}
+              />
+            )}
           </div>
         </div>
       )}

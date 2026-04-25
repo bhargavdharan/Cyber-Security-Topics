@@ -13,8 +13,7 @@ const SimulationRunner = ({ simulationName, topicId, title }) => {
     
     try {
       const response = await api.post(`/simulations/run/${simulationName}`, {
-        topic_id: topicId,
-        menu_choice: '5' // Run all demos
+        topic_id: topicId
       });
       setOutput(response.data.output);
     } catch (err) {
@@ -48,9 +47,9 @@ const SimulationRunner = ({ simulationName, topicId, title }) => {
           <div className="alert alert-danger">{error}</div>
         )}
         {output && (
-          <div className="simulation-output">
-            {output}
-          </div>
+          <pre className="simulation-output bg-dark text-light p-3 rounded" style={{maxHeight: '400px', overflow: 'auto', fontSize: '0.85rem'}}>
+            <code>{output}</code>
+          </pre>
         )}
         {!output && !error && !loading && (
           <p className="text-muted text-center mb-0">Click "Run" to execute the simulation</p>
