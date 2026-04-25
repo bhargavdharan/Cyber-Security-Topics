@@ -1,126 +1,93 @@
-## Cybersecurity Introduction
+# Cyber Security Topics
 
-Cybersecurity refers to the practice of protecting computer systems, networks, and digital information from unauthorized access, damage, theft, disruption, or misuse. With the increasing reliance on technology and the interconnectedness of our digital world, cybersecurity has become a critical aspect of our daily lives, governments, businesses, and individuals.
+A comprehensive repository covering fundamental and advanced cybersecurity concepts, designed for learners, professionals, and enthusiasts.
 
-## List of Cybersecurity Topics
+---
 
-1. Introduction to Cybersecurity
-2. Networking Fundamentals
-3. Operating Systems and Security
-4. Cryptography
-5. Web Application Security
-6. Network Security
-7. Security Assessment and Testing
-8. Incident Response and Forensics
-9. Cloud Security
-10. Mobile Security
-11. Threat Intelligence and Security Analytics
-12. Industrial Control Systems (ICS) Security
-13. Advanced Persistent Threats (APTs)
-14. Secure Software Development
-15. Emerging Technologies in Cybersecurity
+## Table of Contents
 
-### Introduction to Cybersecurity
+1. [Introduction to Cybersecurity](./1.%20Intro%20to%20cybersecurity/)
+   - [Confidentiality](./1.%20Intro%20to%20cybersecurity/confidentiality/)
+   - [Integrity](./1.%20Intro%20to%20cybersecurity/integrity/)
+   - [Availability](./1.%20Intro%20to%20cybersecurity/availability/)
+2. [Networking Fundamentals](./2.%20Networking%20Fundamentals/)
+3. [Operating Systems and Security](./3.%20Operating%20system%20and%20security/)
+4. [Cryptography](./4.%20Cryptography/)
+5. [Web Application Security](./5.%20Web%20Application%20Security/)
+6. [Network Security](./6.%20Network%20Security/)
+7. [Security Assessment and Testing](./7.%20Security%20Assessment%20and%20Testing/)
+8. [Incident Response and Forensics](./8.%20Incident%20Response%20and%20Forensics/)
+9. [Cloud Security](./9.%20Cloud%20Security/)
+10. [Mobile Security](./10.%20Mobile%20Security/)
+11. [Threat Intelligence and Security Analytics](./11.%20Threat%20Intelligence%20and%20Security%20Analytics/)
+12. [Industrial Control Systems (ICS) Security](./12.%20Industrial%20Control%20Systems%20Security/)
+13. [Advanced Persistent Threats (APTs)](./13.%20Advanced%20Persistent%20Threats/)
+14. [Secure Software Development](./14.%20Secure%20Software%20Development/)
+15. [Emerging Technologies in Cybersecurity](./15.%20Emerging%20Technologies%20in%20Cybersecurity/)
 
-- Importance of Cybersecurity
-- Types of Threats
-- CIA Triad (Confidentiality, Integrity, Availability)
-- Security Principles and Best Practices
+---
 
-### Networking Fundamentals
+## Overview of Topics
 
-- TCP/IP Protocol Suite
-- IP Addresses and Subnetting
-- Network Devices and Technologies
-- Network Protocols and Services
+### 1. Introduction to Cybersecurity
+Covers the CIA Triad (Confidentiality, Integrity, Availability), importance of cybersecurity, common threats, and security principles.
 
-### Operating Systems and Security
+### 2. Networking Fundamentals
+Explores TCP/IP, IP addressing, subnetting, network devices, and core protocols (HTTP, DNS, DHCP, FTP).
 
-- Popular Operating Systems (Windows, Linux, macOS)
-- User Management and Access Controls
-- File System Security
-- Security Hardening Techniques
+### 3. Operating Systems and Security
+Security features of Windows, Linux, and macOS; user management, access controls, file system security, and hardening.
 
-### Cryptography
+### 4. Cryptography
+Symmetric and asymmetric encryption, hash functions, digital signatures, certificates, and cryptographic protocols.
 
-- Symmetric Encryption
-- Asymmetric Encryption
-- Hash Functions and Message Digests
-- Digital Signatures and Certificates
+### 5. Web Application Security
+OWASP Top 10 vulnerabilities, secure architecture, input validation, output encoding, and Web Application Firewalls (WAF).
 
-### Web Application Security
+### 6. Network Security
+Firewalls, IDS/IPS, VPNs, wireless security, and network traffic analysis.
 
-- OWASP Top Ten Vulnerabilities
-- Web Application Architecture
-- Input Validation and Output Encoding
-- Web Application Firewalls (WAFs)
+### 7. Security Assessment and Testing
+Vulnerability assessments, penetration testing methodologies, scanning, and exploitation techniques.
 
-### Network Security
+### 8. Incident Response and Forensics
+Incident response frameworks, digital forensics, evidence handling, and malware analysis.
 
-- Firewalls and Intrusion Detection/Prevention Systems (IDS/IPS)
-- Virtual Private Networks (VPNs)
-- Wireless Network Security
-- Network Security Monitoring and Traffic Analysis
+### 9. Cloud Security
+Cloud models, security architecture, Identity and Access Management (IAM), and data protection in cloud environments.
 
-### Security Assessment and Testing
+### 10. Mobile Security
+Mobile device security, application security, Mobile Device Management (MDM), and secure development practices.
 
-- Vulnerability Assessment
-- Penetration Testing
-- Scanning and Enumeration Techniques
-- Exploitation and Post-Exploitation
+### 11. Threat Intelligence and Security Analytics
+Threat intelligence sources, SIEM systems, log analysis, and security data visualization.
 
-### Incident Response and Forensics
+### 12. Industrial Control Systems (ICS) Security
+ICS architecture, attack vectors, security standards, and critical infrastructure protection.
 
-- Incident Response Process and Frameworks
-- Digital Forensics Principles
-- Evidence Collection and Preservation
-- Malware Analysis and Reverse Engineering
+### 13. Advanced Persistent Threats (APTs)
+APT lifecycle, detection strategies, advanced malware analysis, and real-world case studies.
 
-### Cloud Security
+### 14. Secure Software Development
+Secure coding practices, Software Development Lifecycle (SDL), threat modeling, and security testing.
 
-- Cloud Computing Concepts and Models
-- Cloud Security Architecture
-- Identity and Access Management (IAM)
-- Data Protection and Encryption in the Cloud
+### 15. Emerging Technologies in Cybersecurity
+IoT security, AI/ML in security, blockchain security, and post-quantum cryptography.
 
-### Mobile Security
+---
 
-- Mobile Device Security
-- Mobile Application Security
-- Mobile Device Management (MDM)
-- Secure App Development Practices
+## How to Use This Repository
 
-### Threat Intelligence and Security Analytics
+Each topic folder contains a dedicated `README.md` with:
+- Detailed explanations
+- Real-world use cases
+- Best practices
+- Key takeaways
 
-- Threat Intelligence Sources and Sharing Platforms
-- Security Information and Event Management (SIEM)
-- Log Analysis and Correlation
-- Security Data Visualization and Reporting
+Navigate through the topics sequentially or jump to specific areas of interest.
 
-### Industrial Control Systems (ICS) Security
+---
 
-- Overview of ICS Components and Architecture
-- ICS Attack Vectors and Threats
-- ICS Security Standards and Best Practices
-- Securing Critical Infrastructure
+## Contributing
 
-### Advanced Persistent Threats (APTs)
-
-- APT Lifecycle and Tactics
-- APT Detection and Mitigation
-- Advanced Malware Analysis Techniques
-- APT Case Studies and Real-World Examples
-
-### Secure Software Development
-
-- Secure Coding Practices
-- Secure Development Lifecycle (SDL)
-- Threat Modeling and Risk Assessment
-- Code Review and Security Testing
-
-### Emerging Technologies in Cybersecurity
-
-- Internet of Things (IoT) Security
-- Artificial Intelligence (AI) and Machine Learning (ML) in Security
-- Blockchain Security
-- Quantum Computing and Post-Quantum Cryptography
+Contributions are welcome! Feel free to submit enhancements, corrections, or additional topics to expand this cybersecurity knowledge base.
