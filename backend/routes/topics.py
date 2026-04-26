@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, send_from_directory
 from models import Topic, UserProgress, QuizResult
 from routes.middleware import token_required
 import os
-import re
+import markdown as md_lib
 
 topics_bp = Blueprint('topics', __name__, url_prefix='/api/topics')
 
@@ -27,81 +27,14 @@ SLUG_TO_FOLDER = {
 
 
 def markdown_to_html(text):
-    """Simple markdown to HTML converter for lesson content."""
-    lines = text.split('\n')
-    html_lines = []
-    in_code_block = False
-    code_lines = []
-    in_list = False
-    list_type = None
-    
-    for line in lines:
-        # Code blocks
-        if line.startswith('```'):
-            if in_code_block:
-                html_lines.append(f'<pre><code>{"\\n".join(code_lines)}</code></pre>')
-                code_lines = []
-                in_code_block = False
-            else:
-                in_code_block = True
-            continue
-        
-        if in_code_block:
-            code_lines.append(line)
-            continue
-        
-        # Inline code
-        line = re.sub(r'`([^`]+)`', r'<code>\1</code>', line)
-        
-        # Headers
-        if line.startswith('# '):
-            html_lines.append(f'<h1>{line[2:]}</h1>')
-        elif line.startswith('## '):
-            html_lines.append(f'<h2>{line[3:]}</h2>')
-        elif line.startswith('### '):
-            html_lines.append(f'<h3>{line[4:]}</h3>')
-        elif line.startswith('#### '):
-            html_lines.append(f'<h4>{line[5:]}</h4>')
-        # Lists
-        elif line.startswith('- ') or line.startswith('* '):
-            if not in_list or list_type != 'ul':
-                if in_list:
-                    html_lines.append(f'</{list_type}>')
-                html_lines.append('<ul>')
-                in_list = True
-                list_type = 'ul'
-            html_lines.append(f'<li>{line[2:]}</li>')
-        elif re.match(r'^\d+\.\s', line):
-            if not in_list or list_type != 'ol':
-                if in_list:
-                    html_lines.append(f'</{list_type}>')
-                html_lines.append('<ol>')
-                in_list = True
-                list_type = 'ol'
-            content = re.sub(r'^\d+\.\s', '', line)
-            html_lines.append(f'<li>{content}</li>')
-        # Empty line - close lists
-        elif line.strip() == '':
-            if in_list:
-                html_lines.append(f'</{list_type}>')
-                in_list = False
-                list_type = None
-            html_lines.append('<br>')
-        # Bold and italic
-        else:
-            line = re.sub(r'\*\*\*(.+?)\*\*\*', r'<em><strong>\1</strong></em>', line)
-            line = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', line)
-            line = re.sub(r'\*(.+?)\*', r'<em>\1</em>', line)
-            # Links
-            line = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2" target="_blank">\1</a>', line)
-            html_lines.append(f'<p>{line}</p>')
-    
-    if in_list:
-        html_lines.append(f'</{list_type}>')
-    if in_code_block:
-        html_lines.append(f'<pre><code>{"\\n".join(code_lines)}</code></pre>')
-    
-    return '\n'.join(html_lines)
+    """Convert markdown to HTML using the markdown library with extensions."""
+    extensions = [
+        'markdown.extensions.fenced_code',
+        'markdown.extensions.tables',
+        'markdown.extensions.nl2br',
+        'markdown.extensions.sane_lists',
+    ]
+    return md_lib.markdown(text, extensions=extensions)
 
 
 @topics_bp.route('/', methods=['GET'])
