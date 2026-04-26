@@ -4,26 +4,38 @@ A comprehensive repository covering fundamental and advanced cybersecurity conce
 
 ---
 
+## Repository Structure
+
+This repository is organized into three main sections:
+
+| Directory | Description |
+|-----------|-------------|
+| [`learning-content/`](./learning-content/) | 15 cybersecurity topics with README lessons and Python simulation projects |
+| [`lms-platform/`](./lms-platform/) | Full-stack **Cybersecurity LMS** (Flask + React + MySQL) |
+| [`ai-security-products/`](./ai-security-products/) | **AI Security Products** — starting with Risk-Based Authentication Engine |
+
+---
+
 ## Table of Contents
 
-1. [Introduction to Cybersecurity](./1.%20Intro%20to%20cybersecurity/)
-   - [Confidentiality](./1.%20Intro%20to%20cybersecurity/confidentiality/)
-   - [Integrity](./1.%20Intro%20to%20cybersecurity/integrity/)
-   - [Availability](./1.%20Intro%20to%20cybersecurity/availability/)
-2. [Networking Fundamentals](./2.%20Networking%20Fundamentals/)
-3. [Operating Systems and Security](./3.%20Operating%20system%20and%20security/)
-4. [Cryptography](./4.%20Cryptography/)
-5. [Web Application Security](./5.%20Web%20Application%20Security/)
-6. [Network Security](./6.%20Network%20Security/)
-7. [Security Assessment and Testing](./7.%20Security%20Assessment%20and%20Testing/)
-8. [Incident Response and Forensics](./8.%20Incident%20Response%20and%20Forensics/)
-9. [Cloud Security](./9.%20Cloud%20Security/)
-10. [Mobile Security](./10.%20Mobile%20Security/)
-11. [Threat Intelligence and Security Analytics](./11.%20Threat%20Intelligence%20and%20Security%20Analytics/)
-12. [Industrial Control Systems (ICS) Security](./12.%20Industrial%20Control%20Systems%20Security/)
-13. [Advanced Persistent Threats (APTs)](./13.%20Advanced%20Persistent%20Threats/)
-14. [Secure Software Development](./14.%20Secure%20Software%20Development/)
-15. [Emerging Technologies in Cybersecurity](./15.%20Emerging%20Technologies%20in%20Cybersecurity/)
+1. [Introduction to Cybersecurity](./learning-content/1.%20Intro%20to%20cybersecurity/)
+   - [Confidentiality](./learning-content/1.%20Intro%20to%20cybersecurity/confidentiality/)
+   - [Integrity](./learning-content/1.%20Intro%20to%20cybersecurity/integrity/)
+   - [Availability](./learning-content/1.%20Intro%20to%20cybersecurity/availability/)
+2. [Networking Fundamentals](./learning-content/2.%20Networking%20Fundamentals/)
+3. [Operating Systems and Security](./learning-content/3.%20Operating%20system%20and%20security/)
+4. [Cryptography](./learning-content/4.%20Cryptography/)
+5. [Web Application Security](./learning-content/5.%20Web%20Application%20Security/)
+6. [Network Security](./learning-content/6.%20Network%20Security/)
+7. [Security Assessment and Testing](./learning-content/7.%20Security%20Assessment%20and%20Testing/)
+8. [Incident Response and Forensics](./learning-content/8.%20Incident%20Response%20and%20Forensics/)
+9. [Cloud Security](./learning-content/9.%20Cloud%20Security/)
+10. [Mobile Security](./learning-content/10.%20Mobile%20Security/)
+11. [Threat Intelligence and Security Analytics](./learning-content/11.%20Threat%20Intelligence%20and%20Security%20Analytics/)
+12. [Industrial Control Systems (ICS) Security](./learning-content/12.%20Industrial%20Control%20Systems%20Security/)
+13. [Advanced Persistent Threats (APTs)](./learning-content/13.%20Advanced%20Persistent%20Threats/)
+14. [Secure Software Development](./learning-content/14.%20Secure%20Software%20Development/)
+15. [Emerging Technologies in Cybersecurity](./learning-content/15.%20Emerging%20Technologies%20in%20Cybersecurity/)
 
 ---
 
@@ -85,6 +97,41 @@ Each topic folder contains a dedicated `README.md` with:
 - Key takeaways
 
 Navigate through the topics sequentially or jump to specific areas of interest.
+
+---
+
+## Cybersecurity LMS Platform
+
+The [`lms-platform/`](./lms-platform/) directory contains a full-stack learning management system built with:
+- **Backend:** Flask (Python) with JWT auth, MySQL database, REST API
+- **Frontend:** React + Vite with interactive lesson rendering, quizzes, and simulations
+- **Features:** 15 topics, 4 quizzes per topic, Python simulations with live execution, progress tracking
+
+### Quick Start
+```bash
+cd lms-platform/backend
+pip install -r requirements.txt
+python app.py
+# Open http://localhost:5000
+```
+
+---
+
+## AI Security Products
+
+The [`ai-security-products/`](./ai-security-products/) directory contains production-grade security tools built with modern AI/ML practices.
+
+### Risk-Based Authentication Engine
+- **Stack:** FastAPI + React + PostgreSQL + Redis + Docker
+- **Features:** Real-time 6-factor risk scoring (device, geo, time, IP, velocity, behavioral), admin dashboard, Docker Compose deployment
+- **Tests:** 19+ pytest tests with CI/CD via GitHub Actions
+
+### Quick Start
+```bash
+cd ai-security-products/risk-based-auth-engine
+docker-compose up -d
+# Open http://localhost:3000
+```
 
 ---
 
