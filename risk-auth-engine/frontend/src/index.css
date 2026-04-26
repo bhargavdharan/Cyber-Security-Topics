@@ -1,0 +1,49 @@
+:root {
+  --primary-color: #0d6efd;
+  --success-color: #198754;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --info-color: #0dcaf0;
+  --dark-color: #212529;
+}
+
+body {
+  background-color: #f5f7fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.risk-score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 auto;
+}
+
+.risk-low { background: linear-gradient(135deg, #198754, #20c997); }
+.risk-medium { background: linear-gradient(135deg, #ffc107, #ff9800); }
+.risk-high { background: linear-gradient(135deg, #dc3545, #f44336); }
+.risk-critical { background: linear-gradient(135deg, #6f42c1, #dc3545); }
+
+.factor-card {
+  transition: transform 0.2s;
+}
+.factor-card:hover {
+  transform: translateY(-2px);
+}
+
+.api-response {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.85rem;
+  padding: 1rem;
+  border-radius: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
