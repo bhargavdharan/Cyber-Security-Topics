@@ -11,49 +11,49 @@ simulations_bp = Blueprint('simulations', __name__, url_prefix='/api/simulations
 # Map of simulation names to their Python script paths
 SIMULATION_SCRIPTS = {
     # Intro to Cybersecurity
-    'cia_triad': '1. Intro to cybersecurity/projects/cia_triad_simulator.py',
-    'password_strength': '1. Intro to cybersecurity/projects/password_strength_checker.py',
-    'social_engineering': '1. Intro to cybersecurity/projects/social_engineering_quiz.py',
+    'cia_triad': '01. Intro to cybersecurity/projects/cia_triad_simulator.py',
+    'password_strength': '01. Intro to cybersecurity/projects/password_strength_checker.py',
+    'social_engineering': '01. Intro to cybersecurity/projects/social_engineering_quiz.py',
     
     # Networking
-    'subnet_calculator': '2. Networking Fundamentals/projects/subnet_calculator.py',
-    'port_scanner': '2. Networking Fundamentals/projects/port_scanner.py',
-    'dns_lookup': '2. Networking Fundamentals/projects/dns_lookup_tool.py',
+    'subnet_calculator': '02. Networking Fundamentals/projects/subnet_calculator.py',
+    'port_scanner': '02. Networking Fundamentals/projects/port_scanner.py',
+    'dns_lookup': '02. Networking Fundamentals/projects/dns_lookup_tool.py',
     
     # OS Security
-    'file_permissions': '3. Operating system and security/projects/file_permission_analyzer.py',
-    'hardening_checker': '3. Operating system and security/projects/system_hardening_checker.py',
-    'log_monitor': '3. Operating system and security/projects/log_monitor.py',
+    'file_permissions': '03. Operating system and security/projects/file_permission_analyzer.py',
+    'hardening_checker': '03. Operating system and security/projects/system_hardening_checker.py',
+    'log_monitor': '03. Operating system and security/projects/log_monitor.py',
     
     # Cryptography
-    'aes_encryptor': '4. Cryptography/projects/aes_file_encryptor.py',
-    'hash_tool': '4. Cryptography/projects/hash_tool.py',
-    'rsa_demo': '4. Cryptography/projects/rsa_demo.py',
+    'aes_encryptor': '04. Cryptography/projects/aes_file_encryptor.py',
+    'hash_tool': '04. Cryptography/projects/hash_tool.py',
+    'rsa_demo': '04. Cryptography/projects/rsa_demo.py',
     
     # Web App Security
-    'input_sanitization': '5. Web Application Security/projects/input_sanitization_demo.py',
-    'vulnerable_app': '5. Web Application Security/projects/vulnerable_app_simulator.py',
-    'session_security': '5. Web Application Security/projects/session_security_demo.py',
+    'input_sanitization': '05. Web Application Security/projects/input_sanitization_demo.py',
+    'vulnerable_app': '05. Web Application Security/projects/vulnerable_app_simulator.py',
+    'session_security': '05. Web Application Security/projects/session_security_demo.py',
     
     # Network Security
-    'firewall_sim': '6. Network Security/projects/firewall_simulator.py',
-    'ids_sim': '6. Network Security/projects/ids_simulator.py',
-    'vpn_tunnel': '6. Network Security/projects/vpn_tunnel_sim.py',
+    'firewall_sim': '06. Network Security/projects/firewall_simulator.py',
+    'ids_sim': '06. Network Security/projects/ids_simulator.py',
+    'vpn_tunnel': '06. Network Security/projects/vpn_tunnel_sim.py',
     
     # Security Assessment
-    'vuln_scanner': '7. Security Assessment and Testing/projects/vulnerability_scanner.py',
-    'password_auditor': '7. Security Assessment and Testing/projects/password_auditor.py',
-    'dir_enumerator': '7. Security Assessment and Testing/projects/dir_enumerator.py',
+    'vuln_scanner': '07. Security Assessment and Testing/projects/vulnerability_scanner.py',
+    'password_auditor': '07. Security Assessment and Testing/projects/password_auditor.py',
+    'dir_enumerator': '07. Security Assessment and Testing/projects/dir_enumerator.py',
     
     # Incident Response
-    'incident_analyzer': '8. Incident Response and Forensics/projects/incident_analyzer.py',
-    'file_integrity': '8. Incident Response and Forensics/projects/file_integrity_checker.py',
-    'memory_forensics': '8. Incident Response and Forensics/projects/memory_forensics_sim.py',
+    'incident_analyzer': '08. Incident Response and Forensics/projects/incident_analyzer.py',
+    'file_integrity': '08. Incident Response and Forensics/projects/file_integrity_checker.py',
+    'memory_forensics': '08. Incident Response and Forensics/projects/memory_forensics_sim.py',
     
     # Cloud Security
-    'iam_sim': '9. Cloud Security/projects/iam_policy_simulator.py',
-    's3_scanner': '9. Cloud Security/projects/s3_security_scanner.py',
-    'cloud_auditor': '9. Cloud Security/projects/cloud_config_auditor.py',
+    'iam_sim': '09. Cloud Security/projects/iam_policy_simulator.py',
+    's3_scanner': '09. Cloud Security/projects/s3_security_scanner.py',
+    'cloud_auditor': '09. Cloud Security/projects/cloud_config_auditor.py',
     
     # Mobile Security
     'permission_analyzer': '10. Mobile Security/projects/app_permission_analyzer.py',
