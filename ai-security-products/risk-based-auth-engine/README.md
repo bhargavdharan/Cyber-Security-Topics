@@ -1,21 +1,87 @@
 # Risk-Based Authentication Engine
 
-A production-grade, real-time risk scoring engine for adaptive authentication. Protects any application from account takeovers, credential stuffing, and anomalous login behavior.
+A production-grade, real-time risk scoring engine for adaptive authentication. Protects any application from account takeovers, credential stuffing, and anomalous login behavior — without adding friction for legitimate users.
 
-## 🚀 What It Does
+---
 
-Every time a user tries to log in, this engine analyzes:
+## 📋 Problem Statement
 
-| Factor | What It Detects |
-|--------|----------------|
-| **Device Trust** | New devices, emulators, fingerprint changes |
-| **Geo Anomaly** | Impossible travel, new cities/countries |
-| **Time Analysis** | Off-hours logins, unusual patterns |
-| **IP Reputation** | VPNs, proxies, Tor, known bad IPs |
-| **Velocity** | Too many attempts, brute-force patterns |
-| **Behavioral** | Deviations from established baseline |
+Traditional authentication is binary: username + password → allow or deny. This model is broken because:
 
-**Output:** A risk score (0.0–1.0), risk level (LOW/MEDIUM/HIGH/CRITICAL), and recommended action (ALLOW / MFA / REVIEW / BLOCK).
+- **81% of breaches** involve stolen or weak passwords (Verizon DBIR)
+- **Credential stuffing** attacks use millions of leaked credentials automatically
+- **Account takeovers** cost enterprises billions in fraud, support, and reputation damage
+- **Static MFA** annoys users on every login, leading to fatigue and bypass
+- **Legitimate users** traveling, using new devices, or working odd hours get falsely blocked
+
+**The core problem:** How do you distinguish a hacker with stolen credentials from a real user on a new device?
+
+---
+
+## 🎯 Why Use This Project
+
+This engine solves the problem by analyzing **context, not just credentials**. Every login is scored on multiple risk dimensions in real time. You get:
+
+| Benefit | What It Means |
+|---------|---------------|
+| **Frictionless UX** | Low-risk users log in seamlessly — no unnecessary MFA prompts |
+| **Intelligent MFA** | Step-up authentication only when risk is elevated |
+| **Fraud Prevention** | Block account takeovers, bots, and credential stuffing before damage occurs |
+| **Zero-Trust Login** | Continuously verify trust based on behavior, not just a one-time password |
+| **Fast Integration** | Drop-in REST API — works with any auth system (Auth0, Cognito, Keycloak, custom) |
+
+### Who Is This For
+
+- **SaaS platforms** protecting customer accounts
+- **FinTech / Banking apps** meeting compliance (PSD2, FFIEC)
+- **Enterprise IT** securing internal applications
+- **E-commerce** preventing account takeover and fraud
+- **Developers** building auth systems who want enterprise-grade risk detection
+
+---
+
+## ✨ Features
+
+### 6-Factor Risk Scoring
+Every login is analyzed across six independent risk dimensions:
+
+| Factor | Detects | Weight |
+|--------|---------|--------|
+| **Device Trust** | New devices, emulators, fingerprint spoofing, browser anomalies | 20% |
+| **Geo Anomaly** | Impossible travel, new countries/cities, high-risk regions | 25% |
+| **Time Analysis** | Off-hours logins, unusual session timing, holiday access | 10% |
+| **IP Reputation** | VPNs, proxies, Tor exit nodes, known malicious IPs | 15% |
+| **Velocity** | Brute-force bursts, enumeration attacks, rapid retry patterns | 15% |
+| **Behavioral Baseline** | Deviations from the user's established login patterns | 15% |
+
+### Adaptive Decision Engine
+Risk scores map to concrete actions — no guesswork:
+
+| Score | Level | Action | Example Scenario |
+|-------|-------|--------|-----------------|
+| 0.00–0.25 | **LOW** | `ALLOW` | Normal login from known laptop at home |
+| 0.25–0.50 | **MEDIUM** | `MFA` | New phone, same city, daytime — prompt for 2FA |
+| 0.50–0.75 | **HIGH** | `REVIEW` | New country + VPN + off-hours — flag for admin review |
+| 0.75–1.00 | **CRITICAL** | `BLOCK` | Impossible travel, Tor, brute-force pattern — block immediately |
+
+### User Baseline Learning
+- Automatically builds a behavioral profile per user over **14 days**
+- Stores known devices, locations, and time patterns in **Redis**
+- Adapts thresholds dynamically — what is "anomalous" varies by user
+
+### Real-Time Dashboard
+- React-based admin dashboard at `http://localhost:3000`
+- Live risk score visualization with Recharts
+- Per-user assessment history and baseline inspection
+- Health monitoring for API, database, and cache layers
+
+### Production-Ready Infrastructure
+- **Async FastAPI** backend with PostgreSQL + SQLAlchemy async
+- **Redis** caching for sub-millisecond baseline lookups
+- **Docker Compose** for one-command deployment
+- **GitHub Actions CI/CD** with 19+ automated tests
+- **OpenAPI/Swagger** docs auto-generated at `/docs`
+- **Rate limiting** built-in via SlowAPI
 
 ---
 
@@ -24,16 +90,22 @@ Every time a user tries to log in, this engine analyzes:
 ```
 ┌─────────────┐      POST /risk/assess      ┌─────────────────────┐
 │  Your App   │  ─────────────────────────→  │  FastAPI Backend    │
-│  (Any)      │  ← risk_score + action       │  (Python 3.12)      │
+│  (Any)      │  ← risk_score + action       │  (Python 3.12+)     │
 └─────────────┘                              └─────────────────────┘
                                                       │
                         ┌─────────────┬──────────────┘
                         ▼             ▼
                 ┌──────────┐  ┌──────────┐
-                │ PostgreSQL│  │  Redis   │
+                │PostgreSQL│  │  Redis   │
                 │ (Logs)   │  │(Baselines│
                 └──────────┘  │  & Cache)│
                               └──────────┘
+                                     │
+                                     ▼
+                        ┌─────────────────────┐
+                        │  React Dashboard    │
+                        │  (Port 3000)        │
+                        └─────────────────────┘
 ```
 
 ---
@@ -42,59 +114,71 @@ Every time a user tries to log in, this engine analyzes:
 
 | Layer | Technology |
 |-------|-----------|
-| API | FastAPI, Pydantic, Uvicorn |
-| Database | PostgreSQL + SQLAlchemy Async |
-| Cache | Redis |
-| ML/Scoring | Custom rule engine + anomaly detection |
-| Frontend | React 18, Vite, Recharts |
+| API | FastAPI, Pydantic v2, Uvicorn |
+| Database | PostgreSQL 16 + SQLAlchemy 2.0 (async) |
+| Cache | Redis 7 |
+| ML/Scoring | Custom rule engine + statistical anomaly detection |
+| Frontend | React 18, Vite, Recharts, Axios |
+| Testing | pytest, pytest-asyncio, httpx |
 | Deployment | Docker, Docker Compose, GitHub Actions |
 
 ---
 
-## ⚡ Quick Start
+## ⚡ How to Use
 
 ### Prerequisites
-- Docker & Docker Compose
-- OR: Python 3.12 + PostgreSQL + Redis
+- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/install/)
+- OR: Python 3.12+ + PostgreSQL + Redis (for local dev)
 
-### Option 1: Docker (Recommended)
+### Option 1: Docker (Recommended — 2 Minutes)
 
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/bhargavdharan/Cyber-Security-Topics.git
-cd Cyber-Security-Topics/risk-auth-engine
+cd Cyber-Security-Topics/ai-security-products/risk-based-auth-engine
 
-# Start everything
+# 2. Start all services (API + DB + Redis + Dashboard)
 docker-compose up -d
 
-# Check health
+# 3. Verify health
 curl http://localhost:8000/health
+curl http://localhost:8000/health/ready
 
-# Open dashboard
-open http://localhost:3000
+# 4. Open the dashboard
+open http://localhost:3000        # macOS
+start http://localhost:3000       # Windows
 ```
+
+Services will be available at:
+- **API:** `http://localhost:8000`
+- **Dashboard:** `http://localhost:3000`
+- **API Docs:** `http://localhost:8000/docs`
+- **PostgreSQL:** `localhost:5432`
+- **Redis:** `localhost:6379`
 
 ### Option 2: Local Development
 
 ```bash
+# 1. Backend setup
 cd backend
-
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# Install dependencies
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+
 pip install -r requirements.txt
 
-# Set environment variables
-cp .env.example .env
-# Edit .env with your DB and Redis URLs
+# 2. Configure environment
+copy .env.example .env        # Windows
+cp .env.example .env          # macOS/Linux
+# Edit .env with your local DB and Redis URLs
 
-# Run database migrations (auto-created on startup)
-# Start the API
+# 3. Start PostgreSQL and Redis locally, then run the API
 uvicorn app.main:app --reload --port 8000
 
-# In another terminal, start frontend
+# 4. Frontend setup (in a new terminal)
 cd ../frontend
 npm install
 npm run dev
@@ -102,24 +186,24 @@ npm run dev
 
 ---
 
-## 📡 API Endpoints
+## 📡 API Usage
 
-### Assess Risk
+### Assess Login Risk
+
 ```bash
-POST /risk/assess
-Content-Type: application/json
-
-{
-  "user_id": "user_123",
-  "ip_address": "203.0.113.45",
-  "device_fingerprint": "abc123...",
-  "location": {
-    "lat": 40.7128,
-    "lon": -74.0060,
-    "city": "New York",
-    "country": "US"
-  }
-}
+curl -X POST http://localhost:8000/risk/assess \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user_123",
+    "ip_address": "203.0.113.45",
+    "device_fingerprint": "abc123...",
+    "location": {
+      "lat": 40.7128,
+      "lon": -74.0060,
+      "city": "New York",
+      "country": "US"
+    }
+  }'
 ```
 
 **Response:**
@@ -132,11 +216,13 @@ Content-Type: application/json
     {
       "factor": "device_trust",
       "weight": 0.20,
+      "score": 0.0,
       "description": "Known trusted device"
     },
     {
       "factor": "geo_anomaly",
       "weight": 0.25,
+      "score": 0.0,
       "description": "Login 0 km from known location (New York)"
     }
   ],
@@ -151,18 +237,61 @@ Content-Type: application/json
 }
 ```
 
-### Other Endpoints
+### All Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/health` | GET | Service health |
-| `/health/ready` | GET | DB + Redis connectivity |
+| `/health` | GET | Service health check |
+| `/health/ready` | GET | Database + Redis connectivity |
 | `/risk/assess` | POST | Score a login attempt |
-| `/risk/evaluate-and-update` | POST | Score + update baseline |
+| `/risk/evaluate-and-update` | POST | Score + update user baseline |
 | `/risk/user/{id}/history` | GET | User's assessment history |
-| `/risk/user/{id}/baseline` | GET | User's current baseline |
+| `/risk/user/{id}/baseline` | GET | User's current baseline profile |
 
-Full OpenAPI docs at `http://localhost:8000/docs`
+Full interactive API documentation: `http://localhost:8000/docs`
+
+---
+
+## 🔌 Integrating With Your Application
+
+```python
+import requests
+
+def authenticate_user(username, password, request_context):
+    # Step 1: Verify credentials
+    if not verify_password(username, password):
+        return {"error": "Invalid credentials"}
+
+    # Step 2: Get real-time risk score
+    risk_response = requests.post(
+        "http://localhost:8000/risk/assess",
+        json={
+            "user_id": username,
+            "ip_address": request_context.ip,
+            "device_fingerprint": request_context.device_fp,
+            "location": request_context.geo,
+        },
+        timeout=2
+    )
+    risk = risk_response.json()
+
+    # Step 3: Enforce risk-aware policy
+    action = risk["recommended_action"]
+
+    if action == "BLOCK":
+        log_suspicious(username, risk)
+        return {"error": "Access denied", "risk_level": risk["risk_level"]}
+
+    elif action == "MFA":
+        return {"mfa_required": True, "risk_score": risk["risk_score"]}
+
+    elif action == "REVIEW":
+        flag_for_admin_review(username, risk)
+        return {"token": generate_jwt(username), "risk": risk, "review_flag": True}
+
+    # ALLOW — proceed normally
+    return {"token": generate_jwt(username), "risk": risk}
+```
 
 ---
 
@@ -170,22 +299,33 @@ Full OpenAPI docs at `http://localhost:8000/docs`
 
 ```bash
 cd backend
+
+# Run all tests
 pytest -v
 
-# With coverage
+# With coverage report
 pytest --cov=app --cov-report=html
+
+# Specific test file
+pytest tests/test_risk_engine.py -v
 ```
+
+The test suite includes:
+- Risk engine scoring logic (19+ test cases)
+- API endpoint validation
+- Database and Redis connectivity
+- Edge cases (impossible travel, new users, Tor IPs)
 
 ---
 
-## 🔒 Security Considerations
+## 🔒 Security Best Practices
 
 - **Never** use the default `SECRET_KEY` in production
-- Run behind a reverse proxy (Nginx, Traefik, AWS ALB)
-- Use TLS/HTTPS for all traffic
-- Rotate Redis and DB credentials regularly
-- Integrate with real threat intel feeds (AbuseIPDB, VirusTotal)
-- Add rate limiting per user/IP (built-in with SlowAPI)
+- Run behind a reverse proxy (Nginx, Traefik, AWS ALB) with TLS/HTTPS
+- Rotate database and Redis credentials regularly
+- Integrate with real threat intel feeds (AbuseIPDB, VirusTotal, MaxMind GeoIP)
+- Enable rate limiting per user/IP (built-in, configurable via `.env`)
+- Store baselines in Redis with persistence (AOF or RDB snapshots)
 
 ---
 
@@ -193,65 +333,23 @@ pytest --cov=app --cov-report=html
 
 ### Production Checklist
 
-- [ ] Change `SECRET_KEY` to a cryptographically secure random string
+- [ ] Change `SECRET_KEY` to a cryptographically secure random string (≥32 bytes)
 - [ ] Set `DEBUG=false` and `ENVIRONMENT=production`
-- [ ] Configure PostgreSQL with SSL
-- [ ] Set up Redis persistence (AOF or RDB)
-- [ ] Add monitoring (Prometheus/Grafana)
-- [ ] Configure log aggregation
-- [ ] Set up backup strategy for PostgreSQL
+- [ ] Configure PostgreSQL with SSL and restricted network access
+- [ ] Enable Redis persistence (AOF or RDB)
+- [ ] Add monitoring (Prometheus/Grafana) and alerting
+- [ ] Configure centralized logging (ELK, Datadog, Splunk)
+- [ ] Set up automated PostgreSQL backups
+- [ ] Use a secrets manager (AWS Secrets Manager, Vault, Doppler)
 
 ### Cloud Platforms
 
-**AWS:** ECS Fargate + RDS PostgreSQL + ElastiCache Redis + ALB
-**GCP:** Cloud Run + Cloud SQL + Memorystore + Cloud Load Balancing
-**Azure:** Container Apps + Azure Database + Azure Cache + Front Door
-**Railway/Render/Fly.io:** One-click deploy with `docker-compose.yml`
-
----
-
-## 📊 Risk Score Thresholds
-
-| Score | Level | Action | Use Case |
-|-------|-------|--------|----------|
-| 0.00–0.25 | LOW | ALLOW | Normal login from known device/location |
-| 0.25–0.50 | MEDIUM | MFA | New device, slightly off-hours, new city |
-| 0.50–0.75 | HIGH | REVIEW | Multiple anomalies, possible compromise |
-| 0.75–1.00 | CRITICAL | BLOCK | Confirmed attack pattern, impossible travel |
-
----
-
-## 🤝 Integrating With Your App
-
-```python
-import requests
-
-def authenticate_user(username, password, request_context):
-    # Step 1: Check credentials
-    if not verify_password(username, password):
-        return {"error": "Invalid credentials"}
-    
-    # Step 2: Get risk score
-    risk_response = requests.post("http://risk-engine:8000/risk/assess", json={
-        "user_id": username,
-        "ip_address": request_context.ip,
-        "device_fingerprint": request_context.device_fp,
-        "location": request_context.geo,
-    })
-    
-    risk = risk_response.json()
-    
-    # Step 3: Enforce policy
-    if risk["recommended_action"] == "BLOCK":
-        log_suspicious(username, risk)
-        return {"error": "Access denied", "risk_level": risk["risk_level"]}
-    
-    elif risk["recommended_action"] == "MFA":
-        return {"mfa_required": True, "risk_score": risk["risk_score"]}
-    
-    # ALLOW or REVIEW → proceed
-    return {"token": generate_jwt(username), "risk": risk}
-```
+| Platform | Stack |
+|----------|-------|
+| **AWS** | ECS Fargate + RDS PostgreSQL + ElastiCache Redis + ALB |
+| **GCP** | Cloud Run + Cloud SQL + Memorystore + Cloud Load Balancing |
+| **Azure** | Container Apps + Azure Database + Azure Cache + Front Door |
+| **Railway / Render / Fly.io** | One-click deploy with `docker-compose.yml` |
 
 ---
 
