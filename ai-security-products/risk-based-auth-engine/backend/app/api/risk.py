@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel, Field
 
 from app.db.database import get_db
-from app.db.redis_client import set_json
+from app.db.redis_client import set_json, push_to_list
 from app.db.models import RiskAssessment, AuthEvent
 from app.core.risk_engine import RiskEngine
 
@@ -41,6 +41,27 @@ class RiskAssessmentResponse(BaseModel):
     assessment_id: Optional[int] = None
 
 
+async def _run_assessment(request: RiskAssessmentRequest) -> dict:
+    """Core risk assessment logic without DB persistence."""
+    result = await risk_engine.assess_risk(
+        user_id=request.user_id,
+        ip_address=request.ip_address,
+        device_fingerprint=request.device_fingerprint,
+        location=request.location,
+        timestamp=request.timestamp or datetime.utcnow(),
+    )
+    
+    # Store event for velocity tracking (Redis list)
+    event_data = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "ip_address": request.ip_address,
+        "device_fingerprint": request.device_fingerprint,
+    }
+    await push_to_list(f"events:{request.user_id}:recent", event_data, max_length=100, ttl=3600)
+    
+    return result
+
+
 @router.post("/assess", response_model=RiskAssessmentResponse)
 async def assess_risk(
     request: RiskAssessmentRequest,
@@ -53,13 +74,7 @@ async def assess_risk(
     and detailed factor breakdown.
     """
     try:
-        result = await risk_engine.assess_risk(
-            user_id=request.user_id,
-            ip_address=request.ip_address,
-            device_fingerprint=request.device_fingerprint,
-            location=request.location,
-            timestamp=request.timestamp or datetime.utcnow(),
-        )
+        result = await _run_assessment(request)
         
         # Persist assessment to database
         assessment = RiskAssessment(
@@ -77,15 +92,6 @@ async def assess_risk(
         await db.refresh(assessment)
         
         result["assessment_id"] = assessment.id
-        
-        # Store event for velocity tracking
-        event_data = {
-            "timestamp": datetime.utcnow().isoformat(),
-            "ip_address": request.ip_address,
-            "device_fingerprint": request.device_fingerprint,
-        }
-        await set_json(f"events:{request.user_id}:recent", event_data, ttl=3600)
-        
         return result
         
     except Exception as e:
@@ -106,18 +112,21 @@ async def evaluate_and_update_baseline(
     Evaluate risk and update user baseline after authentication.
     Call this after the user completes login (success or failure).
     """
-    # First assess risk
-    result = await assess_risk(request, db)
+    # Run core assessment (no DB persistence here)
+    result = await _run_assessment(request)
     
-    # Update baseline (only on success)
-    if success:
-        await risk_engine.update_baseline(
-            user_id=request.user_id,
-            device_fingerprint=request.device_fingerprint,
-            ip_address=request.ip_address,
-            location=request.location,
-            success=True,
-        )
+    # Persist single RiskAssessment + AuthEvent together
+    assessment = RiskAssessment(
+        user_id=request.user_id,
+        ip_address=request.ip_address,
+        device_fingerprint=request.device_fingerprint,
+        location=request.location,
+        risk_score=result["risk_score"],
+        risk_level=result["risk_level"],
+        recommended_action=result["recommended_action"],
+        factors=result["factors"],
+    )
+    db.add(assessment)
     
     # Log auth event
     auth_event = AuthEvent(
@@ -131,6 +140,26 @@ async def evaluate_and_update_baseline(
     )
     db.add(auth_event)
     await db.commit()
+    await db.refresh(assessment)
+    result["assessment_id"] = assessment.id
+    
+    # Update baseline (only on success)
+    if success:
+        await risk_engine.update_baseline(
+            user_id=request.user_id,
+            device_fingerprint=request.device_fingerprint,
+            ip_address=request.ip_address,
+            location=request.location,
+            success=True,
+        )
+    else:
+        # Log failure for behavioral scoring
+        failure_data = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "ip_address": request.ip_address,
+            "device_fingerprint": request.device_fingerprint,
+        }
+        await push_to_list(f"events:{request.user_id}:failures", failure_data, max_length=50, ttl=3600)
     
     return {
         **result,

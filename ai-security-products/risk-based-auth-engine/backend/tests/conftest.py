@@ -34,6 +34,30 @@ class FakeRedis:
     async def ping(self):
         return True
     
+    async def lpush(self, key, value):
+        if key not in _fake_redis:
+            _fake_redis[key] = []
+        _fake_redis[key].insert(0, value)
+    
+    async def ltrim(self, key, start, end):
+        if key in _fake_redis:
+            items = _fake_redis[key]
+            if end == -1:
+                end = len(items)
+            _fake_redis[key] = items[start:end+1]
+    
+    async def lrange(self, key, start, end):
+        items = _fake_redis.get(key, [])
+        if end == -1:
+            end = len(items)
+        return items[start:end+1]
+    
+    async def expire(self, key, seconds):
+        pass  # No TTL support in FakeRedis
+    
+    def pipeline(self):
+        return FakePipeline()
+    
     async def zadd(self, key, mapping):
         if key not in _fake_redis:
             _fake_redis[key] = []
@@ -48,6 +72,34 @@ class FakeRedis:
     
     async def dbsize(self):
         return len(_fake_redis)
+
+
+class FakePipeline:
+    """Fake Redis pipeline for batch operations."""
+    def __init__(self):
+        self._ops = []
+    
+    def lpush(self, key, value):
+        self._ops.append(('lpush', key, value))
+        return self
+    
+    def ltrim(self, key, start, end):
+        self._ops.append(('ltrim', key, start, end))
+        return self
+    
+    def expire(self, key, seconds):
+        self._ops.append(('expire', key, seconds))
+        return self
+    
+    async def execute(self):
+        for op in self._ops:
+            if op[0] == 'lpush':
+                await FakeRedis().lpush(op[1], op[2])
+            elif op[0] == 'ltrim':
+                await FakeRedis().ltrim(op[1], op[2], op[3])
+            elif op[0] == 'expire':
+                await FakeRedis().expire(op[1], op[2])
+        self._ops = []
 
 
 # Patch Redis client

@@ -40,6 +40,23 @@ async def delete_key(key: str) -> None:
     await r.delete(key)
 
 
+async def push_to_list(key: str, value: Any, max_length: int = 100, ttl: Optional[int] = None) -> None:
+    """Push JSON-serializable value to a Redis list (left push), trim to max_length."""
+    r = await get_redis()
+    pipe = r.pipeline()
+    pipe.lpush(key, json.dumps(value))
+    pipe.ltrim(key, 0, max_length - 1)
+    pipe.expire(key, ttl or settings.redis_ttl_seconds)
+    await pipe.execute()
+
+
+async def get_list_range(key: str, start: int = 0, end: int = -1) -> list:
+    """Retrieve and deserialize a range of values from a Redis list."""
+    r = await get_redis()
+    data = await r.lrange(key, start, end)
+    return [json.loads(item) for item in data if item]
+
+
 async def add_to_sorted_set(key: str, score: float, member: str) -> None:
     """Add member to sorted set with score."""
     r = await get_redis()

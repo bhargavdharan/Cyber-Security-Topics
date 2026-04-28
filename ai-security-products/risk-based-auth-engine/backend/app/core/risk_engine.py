@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, List, Optional
 from app.config import get_settings
 from app.core.geo import calculate_geo_risk, get_ip_reputation
-from app.db.redis_client import get_json, set_json
+from app.db.redis_client import get_json, set_json, get_list_range
 
 settings = get_settings()
 
@@ -179,8 +179,8 @@ class RiskEngine:
     
     async def _score_velocity(self, user_id: str, timestamp: datetime) -> Dict[str, Any]:
         """Score login velocity (too many attempts, impossible travel)."""
-        # Get recent login events from Redis
-        recent_events = await get_json(f"events:{user_id}:recent") or []
+        # Get recent login events from Redis list
+        recent_events = await get_list_range(f"events:{user_id}:recent", 0, 99)
         
         # Filter to last hour
         one_hour_ago = (timestamp - timedelta(hours=1)).isoformat()
@@ -206,8 +206,8 @@ class RiskEngine:
         if not has_baseline:
             return {"score": 0.2, "description": "Baseline still learning (new user)"}
         
-        # Check for recent failures
-        recent_failures = await get_json(f"events:{user_id}:failures") or []
+        # Check for recent failures from Redis list
+        recent_failures = await get_list_range(f"events:{user_id}:failures", 0, 99)
         one_hour_ago = (timestamp - timedelta(hours=1)).isoformat()
         failure_count = sum(1 for e in recent_failures if e.get("timestamp", "") > one_hour_ago)
         
